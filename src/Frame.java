@@ -10,16 +10,16 @@ import javax.swing.JOptionPane;
 public class Frame {
 
     // variables declaration and initialization
-    private static JButton play = new JButton("PLAY");
-    private static JButton quit = new JButton("QUIT");
-    private static JButton enter = new JButton("ENTER");
+    private static final JButton play = new JButton("PLAY");
+    private static final JButton quit = new JButton("QUIT");
+    private static final JButton enter = new JButton("ENTER");
 
-    private static JLabel lblGuess = new JLabel("Enter your guess:");
-    private static JLabel errorMsg = new JLabel("");
+    private static final JLabel lblGuess = new JLabel("Enter your guess:");
+    private static final JLabel errorMsg = new JLabel("");
 
-    private static JTextField guessField = new JTextField(10);
+    private static final JTextField guessField = new JTextField(10);
 
-    private static JLabel interval = new JLabel();
+    private static final JLabel interval = new JLabel();
     private static JFrame main, f2;
 
     static int tries, start, end, randomNum;
@@ -145,71 +145,70 @@ public class Frame {
 
     // action listener for play button
     private static void makePlayWork() {
-        play.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                playSound("start.wav");
-                playSound("logon.wav");
-                secondFrame();
-            }
+        play.addActionListener(e -> {
+            playSound("start.wav");
+            playSound("logon.wav");
+            secondFrame();
         });
     }
 
     // action listener for quit button
     private static void makeQuitWork() {
-        quit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        quit.addActionListener(e -> {
+            playSound("start.wav");
+            int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure" +
+                    " you want to quit the game?", "Exit Game?", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (confirmation == JOptionPane.YES_OPTION) {
                 playSound("start.wav");
-                int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure" +
-                        " you want to quit the game?", "Exit Game?", JOptionPane.YES_NO_CANCEL_OPTION);
-                if (confirmation == JOptionPane.YES_OPTION) {
-                    playSound("start.wav");
-                    playSound("logoff.wav");
-                    main.dispose();
-                } else playSound("start.wav");
-            }
+                playSound("logoff.wav");
+                main.dispose();
+            } else playSound("start.wav");
         });
     }
 
     // action listener for enter button
     private static void makeEnterWork() {
-        enter.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                playSound("start.wav");
-                if (!guessField.getText().equals("")) {
-                    int guessNum = Integer.parseInt(guessField.getText());
-                    if (ivl.withinBoundary(guessNum)) {
-                        if (guessNum != randomNum) {
-                            playSound("chord.wav");
-                            tries++;
-                            ivl.updateInterval(guessNum, randomNum);
-                            JOptionPane.showMessageDialog(null, "WRONG!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                            updateInterval();
-                        } else {
-                            playSound("tada.wav");
-                            JOptionPane.showMessageDialog(null, "BINGO! The secret number is " + guessNum + ". And it took you " + tries + " trial(s).");
-                            playSound("ding.wav");
-                            int res = JOptionPane.showConfirmDialog(null, "Would you like to play again?", "One More?", JOptionPane.YES_NO_OPTION);
-                            if (res == JOptionPane.YES_OPTION) {
-                                playSound("start.wav");
-                                gameReset();
-                                playSound("logon.wav");
-                                JOptionPane.showMessageDialog(null, "A new game has started. Good Luck!");
-                                playSound("start.wav");
-                            } else {
-                                playSound("start.wav");
-                                JOptionPane.showMessageDialog(null, "Thanks for your participation! Please come again!");
-                                playSound("start.wav");
-                                playSound("logoff.wav");
-                                System.exit(0);
-                            }
-                        }
+        enter.addActionListener(e -> {
+            playSound("start.wav");
+            if (!guessField.getText().equals("")) {
+                int guessNum = Integer.parseInt(guessField.getText());
+                if (ivl.withinBoundary(guessNum)) {
+                    if (guessNum != randomNum) {
+                        playSound("chord.wav");
+                        tries++;
+                        ivl.updateInterval(guessNum, randomNum);
+                        JOptionPane.showMessageDialog(null, "WRONG!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        updateInterval();
                     } else {
-                        playSound("critical-stop.wav");
-                        JOptionPane.showMessageDialog(null, "OUT OF BOUNDARY!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                        playSound("start.wav");
+                        playSound("tada.wav");
+                        if (tries > 1) {
+                            JOptionPane.showMessageDialog(null, "BINGO! The secret number is " + guessNum + ". And it took you " + tries + " tries.");
+                            playSound("ding.wav");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "What a lucky guy! The secret number is " + guessNum + ". And it took you 1 try ONLY!");
+                            playSound("ding.wav");
+                        }
+                        int res = JOptionPane.showConfirmDialog(null, "Would you like to play again?", "One More?", JOptionPane.YES_NO_OPTION);
+                        if (res == JOptionPane.YES_OPTION) {
+                            playSound("start.wav");
+                            gameReset();
+                            playSound("logon.wav");
+                            JOptionPane.showMessageDialog(null, "A new game has started. Good Luck!");
+                            playSound("start.wav");
+                        } else {
+                            playSound("start.wav");
+                            JOptionPane.showMessageDialog(null, "Thanks for your participation! Please come again!");
+                            playSound("start.wav");
+                            playSound("logoff.wav");
+                            System.exit(0);
+                        }
                     }
-                    guessField.setText("");
+                } else {
+                    playSound("critical-stop.wav");
+                    JOptionPane.showMessageDialog(null, "OUT OF BOUNDARY!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    playSound("start.wav");
                 }
+                guessField.setText("");
             }
         });
     }
